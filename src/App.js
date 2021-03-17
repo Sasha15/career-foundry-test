@@ -1,23 +1,31 @@
+import React, { useState, useEffect, useContext } from 'react';
+import { getMentorAgenda } from './utils/services';
+import useRequest from './hooks/useRequest';
+
+import Calendar from './components/Calendar/Calendar';
+
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+    const [content, isLoading, error] = useRequest({
+    service: getMentorAgenda,
+    serviceArg: 1,
+    dependencies: [],
+  });
+  if(isLoading) {
+    return <div>Data is loading...</div>
+  }
+  if (error) {
+    return <div>Sorry, something went wrong.</div>
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        {content && 
+          <main>
+              <Calendar calendarData={content} theme="salmon" />
+          </main>
+        }
     </div>
   );
 }
